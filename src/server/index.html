@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Email Bridge</title>
+<script>
+  // Theme: light is the default, dark via browser preference,
+  // overridable with ?theme=light|dark — the open-bot dashboard toggle drives this
+  // parameter on the proxied page. Set before CSS so there is no flash.
+  (function () {
+    var apply = function () {
+      var q = null;
+      try { q = new URLSearchParams(location.search).get("theme"); } catch (e) {}
+      var dark = q === "dark" || (q !== "light" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+      if (dark) document.documentElement.setAttribute("data-theme", "dark");
+      else document.documentElement.removeAttribute("data-theme");
+    };
+    apply();
+    try {
+      var mq = window.matchMedia("(prefers-color-scheme: dark)");
+      if (mq.addEventListener) mq.addEventListener("change", function () { if (!new URLSearchParams(location.search).get("theme")) apply(); });
+    } catch (e) {}
+  })();
+</script>
+<link rel="stylesheet" href="./styles.css">
+
+</head>
+<body>
+<div class="wrap">
+  <h1>📧 Email Bridge</h1>
+  <p class="sub" id="sub"></p>
+  <div class="banner" id="banner"></div>
+  <div id="list"></div>
+  <div class="card">
+    <div class="row">
+      <div class="grow label" id="addTitle"></div>
+      <button class="primary small" id="toggleForm"></button>
+    </div>
+    <div class="form" id="form">
+      <div class="grid">
+        <div class="full"><label class="muted" id="l-label"></label><input id="f-label" placeholder="Perso"></div>
+        <div><label class="muted" id="l-provider"></label><select id="f-provider"></select></div>
+        <div><label class="muted" id="l-email"></label><input id="f-email" type="email" placeholder="moi@gmail.com"></div>
+        <div class="full"><label class="muted" id="l-password"></label><input id="f-password" type="password" placeholder="●●●●●●●●●●●●"></div>
+      </div>
+      <fieldset id="customBox">
+        <legend id="l-custom"></legend>
+        <div class="grid">
+          <div><label class="muted">IMAP host</label><input id="f-imapHost"></div>
+          <div><label class="muted">IMAP port</label><input id="f-imapPort" type="number"></div>
+          <div><label class="muted">SMTP host</label><input id="f-smtpHost"></div>
+          <div><label class="muted">SMTP port</label><input id="f-smtpPort" type="number"></div>
+          <div><label class="muted">IMAP mode</label><select id="f-imapMode"><option value="auto">auto (ssl)</option><option value="ssl">ssl</option><option value="starttls">starttls</option></select></div>
+          <div><label class="muted">SMTP mode</label><select id="f-smtpMode"><option value="auto">auto</option><option value="ssl">ssl</option><option value="starttls">starttls</option></select></div>
+          <div class="full row"><input type="checkbox" id="f-insecure" style="width:auto"> <label for="f-insecure" class="muted" id="l-insecure"></label></div>
+        </div>
+      </fieldset>
+      <div class="actions">
+        <button class="primary" id="saveBtn"></button>
+        <button id="cancelBtn"></button>
+        <span class="muted" id="hintDefault"></span>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="./app.ts"></script>
+</body>
+</html>
